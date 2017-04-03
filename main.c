@@ -1,6 +1,7 @@
 #include "stm32f4xx_conf.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_rcc.h"
+#include "stm32f4xx_spi.h"
 
 int main(void)
 {
@@ -17,7 +18,7 @@ int main(void)
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz ;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP ;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF ;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_7 ;
 	GPIO_Init(GPIOA , &GPIO_InitStructure) ;
 
@@ -28,7 +29,7 @@ int main(void)
 	// MISO
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI1, ENABLE);
+
 
 	SPI_InitTypeDef SPI_InitStructure;
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
@@ -45,7 +46,7 @@ int main(void)
 	SPI_Cmd(SPI1, ENABLE);
 	SPI_SSOutputCmd(SPI1 , ENABLE) ;
 
-	GPIO_WriteBit( SPI_GPIO , SPI1_PIN_NSS , Bit_RESET ) ;
+	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 
 	for(;;)
 	{
