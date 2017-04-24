@@ -1,56 +1,65 @@
-#include "stm32f4xx_conf.h"
-#include "stm32f4xx_gpio.h"
-#include "stm32f4xx_rcc.h"
-#include "stm32f4xx_spi.h"
+/**
+ *	Keil project example for HD44780 LCD driver
+ *
+ *	@author 	Tilen Majerle
+ *	@email		tilen@majerle.eu
+ *	@website	http://stm32f4-discovery.com
+ *	@ide		Keil uVision 5
+ */
+#include "defines.h"
+#include "stm32f4xx.h"
+#include "tm_stm32f4_delay.h"
+#include "tm_stm32f4_hd44780.h"
 
-int main(void)
-{
+int main(void) {
+	//Rectangle for custom character
+	//xxx means doesn't care, lower 5 bits are important for LCD
+	uint8_t customChar[] = {
+		0x1F,	// xxx 11111
+		0x11,	// xxx 10001
+		0x11,	// xxx 10001
+		0x11,	// xxx 10001
+		0x11,	// xxx 10001
+		0x11,	// xxx 10001
+		0x11,	// xxx 10001
+		0x1F	// xxx 11111
+	};
+	//Initialize system
 	SystemInit();
 
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	//Initialize LCD 20 cols x 4 rows
+	TM_HD44780_Init(16, 4);
 
-	GPIO_InitTypeDef  GPIO_InitStructure;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
+	//Save custom character on location 0 in LCD
+	TM_HD44780_CreateChar(0, &customChar[0]);
 
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz ;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF ;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_7 ;
-	GPIO_Init(GPIOA , &GPIO_InitStructure) ;
-
-	// CS
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource4, GPIO_AF_SPI1);
-	// SCK
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
-	// MISO
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
+	//Put string to LCD
+	TM_HD44780_Puts(0, 0, "Ladnie dzialam!");
+	TM_HD44780_Puts(0, 1, ":) ;) :D ");
 
 
+	//Wait a little
+	Delayms(3000);
 
-	SPI_InitTypeDef SPI_InitStructure;
-	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
-	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-	SPI_InitStructure.SPI_CRCPolynomial = 7;
-	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-	SPI_Init(SPI1, &SPI_InitStructure);
+	//Clear LCD
+	TM_HD44780_Clear();
 
-	SPI_Cmd(SPI1, ENABLE);
-	SPI_SSOutputCmd(SPI1 , ENABLE) ;
+	//Show cursor
+	TM_HD44780_CursorOn();
 
-	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+	//Write new text
+	TM_HD44780_Puts(6, 2, "CLEARED!");
 
-	for(;;)
-	{
+	//Wait a little
+	Delayms(1000);
+
+	//Enable cursor blinking
+	TM_HD44780_BlinkOn();
+
+	//Show custom character at x = 1, y = 2 from RAM location 0
+	TM_HD44780_PutCustom(1, 2, 0);
+
+	while (1) {
 
 	}
-
 }
