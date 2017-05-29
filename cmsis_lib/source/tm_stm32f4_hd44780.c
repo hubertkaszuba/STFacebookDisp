@@ -165,7 +165,26 @@ void TM_HD44780_Puts(uint8_t x, uint8_t y, char* str) {
 		str++;
 	}
 }
-
+void TM_HD44780_PutsVCP(uint8_t x, uint8_t y, char* str) {
+	TM_HD44780_CursorSet(x, y);
+	while (*str != '$') {
+		if (HD44780_Opts.currentX >= HD44780_Opts.Cols) {
+			HD44780_Opts.currentX = 0;
+			HD44780_Opts.currentY++;
+			TM_HD44780_CursorSet(HD44780_Opts.currentX, HD44780_Opts.currentY);
+		}
+		if (*str == '*' && *str+1 == 'n') {
+			HD44780_Opts.currentY++;
+			TM_HD44780_CursorSet(HD44780_Opts.currentX, HD44780_Opts.currentY);
+		} else if (*str == '\r') {
+			TM_HD44780_CursorSet(0, HD44780_Opts.currentY);
+		} else {
+			TM_HD44780_Data(*str);
+			HD44780_Opts.currentX++;
+		}
+		str++;
+	}
+}
 void TM_HD44780_DisplayOn(void) {
 	HD44780_Opts.DisplayControl |= HD44780_DISPLAYON;
 	TM_HD44780_Cmd(HD44780_DISPLAYCONTROL | HD44780_Opts.DisplayControl);
