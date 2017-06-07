@@ -21,10 +21,10 @@ volatile uint32_t ticker, downTicker;
 int switcher=0;
 char data[1024];
 char *dataVCP;
-char user[64];
+char user[128];
 char msg[25][128];
 char view[128];
-char date[64];
+char date[128];
 int flag  = 0;
 char nr[4];
 int pom =0;
@@ -67,14 +67,14 @@ void OTG_FS_WKUP_IRQHandler(void);
  {
           	if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
           	{
-          		if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_0) != RESET)
+          		if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_0) != RESET)
           		{
-
           			GPIO_SetBits(GPIOD, GPIO_Pin_13);
-          			switcher--;
-       				if(switcher < 0)
-          		       switcher=25;
-          		    flag=1;
+  	          		switcher++;
+	          		if(switcher == 26)
+	          			switcher = 0;
+	          		flag=1;
+
           		}
           		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
           		TIM_Cmd(TIM2, DISABLE);
@@ -90,11 +90,10 @@ void OTG_FS_WKUP_IRQHandler(void);
           		if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) != RESET)
           		{
           			GPIO_SetBits(GPIOD, GPIO_Pin_15);
-          			TM_HD44780_Puts(0,1,"test");
-  	          		switcher++;
-	          		if(switcher == 26)
-	          			switcher = 0;
-	          		flag=1;
+          			switcher--;
+       				if(switcher < 0)
+          		       switcher=25;
+          		    flag=1;
 				}
           		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
           		TIM_Cmd(TIM4, DISABLE);
@@ -240,9 +239,9 @@ int main(void)
 
 	//SYSCFG_EXTILineConfig(GPIOB, EXTI_PinSource0);
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource1);
-	//SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource1);
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource0);
 	EXTI_ClearITPendingBit(EXTI_Line1);
-	//EXTI_ClearITPendingBit(EXTI_Line0);
+	EXTI_ClearITPendingBit(EXTI_Line0);
 
 	/* Set up the system clocks */
 	SystemInit();
@@ -252,20 +251,20 @@ int main(void)
 
 	TM_HD44780_Init(20, 4);
 
-	Delayms(4000);
 
 
-	/*for(int j = 0; j < 25;j++)
+	for(int j = 0; j < 25;j++){
 		for(int i = 0; i<128; i++){
 			user[i] = ' ';
 			view[i] = ' ';
 			msg[j][i] = ' ';
 			date[i] = ' ';
-		}*/
+		}
+	}
 	int index=0;
 	for(;;)
 	{
-		Delayms(1000);
+		Delayms(500);
 		TM_HD44780_ScrollLeft();
 
 		if (VCP_get_string(data))
@@ -340,11 +339,9 @@ int main(void)
 			TM_HD44780_Clear();
 			for(int i = 0; i < 64; i++)
 			  	view[i] = msg[switcher-1][i];
-		//	TM_HD44780_PutsVCP(0,0,"Nr.");
 
-		//	TM_HD44780_PutsVCP(4,0,switcher);
 			TM_HD44780_PutsVCP(0,0,view);
-			Delayms(4000);
+
 			flag=0;
 			}
 			else if (switcher == 0 && flag == 1) {
