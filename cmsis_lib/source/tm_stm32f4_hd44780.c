@@ -150,7 +150,7 @@ void TM_HD44780_Puts(uint8_t x, uint8_t y, char* str) {
 	while (*str) {
 		if (HD44780_Opts.currentX >= HD44780_Opts.Cols) {
 			HD44780_Opts.currentX = 0;
-			HD44780_Opts.currentY++;
+			HD44780_Opts.currentY+=2;
 			TM_HD44780_CursorSet(HD44780_Opts.currentX, HD44780_Opts.currentY);
 		}
 		if (*str == '\n') {
@@ -169,15 +169,20 @@ void TM_HD44780_PutsVCP(uint8_t x, uint8_t y, char* str) {
 	TM_HD44780_CursorSet(x, y);
 	while (*str != '$') {
 		if (HD44780_Opts.currentX >= HD44780_Opts.Cols) {
-			HD44780_Opts.currentX = 0;
-			HD44780_Opts.currentY++;
+			HD44780_Opts.currentX =0;
+			if(HD44780_Opts.currentY == 0)
+				HD44780_Opts.currentY = 2;
+			else if (HD44780_Opts.currentY == 2)
+				HD44780_Opts.currentY = 1;
+			else if(HD44780_Opts.currentY == 1)
+				HD44780_Opts.currentY = 3;
 			TM_HD44780_CursorSet(HD44780_Opts.currentX, HD44780_Opts.currentY);
 		}
 		if (*str == '*' && *str+1 == 'n') {
 			HD44780_Opts.currentY++;
 			TM_HD44780_CursorSet(HD44780_Opts.currentX, HD44780_Opts.currentY);
 		} else if (*str == '\r') {
-			TM_HD44780_CursorSet(0, HD44780_Opts.currentY);
+			TM_HD44780_CursorSet(0,HD44780_Opts.currentY );
 		} else {
 			TM_HD44780_Data(*str);
 			HD44780_Opts.currentX++;

@@ -30,4 +30,6 @@
 
 /* Put your global defines for all libraries here used in your project */
 
+//#define USB_VCP_RECEIVE_BUFFER_LENGTH        1024
+
 #endif
