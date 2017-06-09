@@ -18,17 +18,16 @@
 #include "tm_stm32f4_delay.h"
 #include "tm_stm32f4_hd44780.h"
 volatile uint32_t ticker, downTicker;
+char user[128];
+char user_pom[128];
 int switcher=0;
 char data[1024];
-char *dataVCP;
-char user[128];
-char msg[25][128];
 char view[128];
 char date[128];
 int flag  = 0;
-char nr[4];
+int user_flag =0;
 int pom =0;
-int dlugosc =0;
+char msg[25][128];
 /*
  * The USB data must be 4 byte aligned if DMA is enabled. This macro handles
  * the alignment, if necessary (it's actually magic, but don't tell anyone).
@@ -178,14 +177,14 @@ int main(void)
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_TimeBaseStructure.TIM_Period = 8399;
-	TIM_TimeBaseStructure.TIM_Prescaler = 1999;
+	TIM_TimeBaseStructure.TIM_Prescaler = 999;
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 
 
 	TIM_TimeBaseStructure.TIM_Period = 8399;
-	TIM_TimeBaseStructure.TIM_Prescaler = 1999;
+	TIM_TimeBaseStructure.TIM_Prescaler = 999;
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
@@ -267,11 +266,28 @@ int main(void)
 		Delayms(500);
 		TM_HD44780_ScrollLeft();
 
+		if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) != RESET && user_flag == 1)
+		{
+			TM_HD44780_Clear();
+			TM_HD44780_PutsVCP(0,0,user);
+			TM_HD44780_PutsVCP(0,1,date);
+			user_flag=2;
+		}
+		else if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) != RESET && user_flag != 1)
+		{
+			TM_HD44780_Clear();
+			for(int i = 0; i < 64; i++)
+				view[i] = msg[0][i];
+			TM_HD44780_PutsVCP(0,0,view);
+		}
+
 		if (VCP_get_string(data))
 		{
 
 			VCP_send_str(data);
-
+			TM_HD44780_Clear();
+			TM_HD44780_Puts(0,0, "NOWE POWIADOMIENIE!");
+			TM_HD44780_Puts(0,1, "NACISNIJ 'USER', ABY WYSWIETLIC!");
 			for(int i = 0; i <1024; i++)
 			{
 
@@ -287,11 +303,13 @@ int main(void)
 							pom2++;
 							}
 							user[pom+1] = '$';
-
+						user_flag = 1;
+						for(int i = 0; i < 128; i++)
+							user_pom[i] = user[i];
 					}
 					else if(data[i-3] == 'm' && data[i-2]=='s' && data[i-1] == 'g')
 					{
-						if(index==26)
+						if(index==25)
 						{
 							update();
 							int pom = 0;
@@ -302,6 +320,8 @@ int main(void)
 								pom2++;
 								}
 							msg[0][pom+1] = '$';
+							for(int i =0; i<128;i++)
+								user[i] = user_pom[i];
 						}
 						else
 						{
