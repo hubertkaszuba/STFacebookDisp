@@ -1,12 +1,34 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -g -nostartfiles -Map=STFacebookDisp.map -O0 --gc-sections -LC:\CooCox\CoIDE\configuration\ProgramData\STFacebookDisp -TC:\CooCox\CoIDE\configuration\ProgramData\STFacebookDisp/arm-gcc-link.ld -g">
-      <target file="STFacebookDisp.elf" lastModified="15ae7be0f18">
-         <source file="..\obj\startup_stm32f4xx.o" lastModified="15ae7be0a20"/>
-         <source file="..\obj\main.o" lastModified="15ae7be0a8e"/>
-         <source file="..\obj\stm32f4xx_rcc.o" lastModified="15ae7be0b3e"/>
-         <source file="..\obj\stm32f4xx_gpio.o" lastModified="15ae7be0bd2"/>
-         <source file="..\obj\system_stm32f4xx.o" lastModified="15ae7be0c5a"/>
+      <target file="STFacebookDisp.elf" lastModified="15c9706ab36">
+         <source file="..\obj\stm32f4xx_syscfg.o" lastModified="15c97068c86"/>
+         <source file="..\obj\usb_core.o" lastModified="15c97068da6"/>
+         <source file="..\obj\tm_stm32f4_hd44780.o" lastModified="15c97068e8b"/>
+         <source file="..\obj\usbd_usr.o" lastModified="15c97068f12"/>
+         <source file="..\obj\startup_stm32f4xx.o" lastModified="15c97068f70"/>
+         <source file="..\obj\usbd_core.o" lastModified="15c97069017"/>
+         <source file="..\obj\main.o" lastModified="15c9706917d"/>
+         <source file="..\obj\stm32f4xx_rcc.o" lastModified="15c970692cf"/>
+         <source file="..\obj\stm32f4xx_adc.o" lastModified="15c9706943d"/>
+         <source file="..\obj\tm_stm32f4_delay.o" lastModified="15c970694e4"/>
+         <source file="..\obj\usbd_desc.o" lastModified="15c970695ea"/>
+         <source file="..\obj\stm32f4xx_gpio.o" lastModified="15c9706973a"/>
+         <source file="..\obj\usbd_cdc_vcp.o" lastModified="15c97069852"/>
+         <source file="..\obj\system_stm32f4xx.o" lastModified="15c97069939"/>
+         <source file="..\obj\syscalls.o" lastModified="15c97069aa1"/>
+         <source file="..\obj\usb_bsp.o" lastModified="15c97069b99"/>
+         <source file="..\obj\usbd_req.o" lastModified="15c97069d28"/>
+         <source file="..\obj\usb_dcd_int.o" lastModified="15c97069e57"/>
+         <source file="..\obj\usbd_cdc_core.o" lastModified="15c97069f41"/>
+         <source file="..\obj\stm32f4xx_spi.o" lastModified="15c9706a0a1"/>
+         <source file="..\obj\stm32f4xx_exti.o" lastModified="15c9706a19d"/>
+         <source file="..\obj\misc.o" lastModified="15c9706a332"/>
+         <source file="..\obj\usb_dcd.o" lastModified="15c9706a40d"/>
+         <source file="..\obj\tm_stm32f4_gpio.o" lastModified="15c9706a4f7"/>
+         <source file="..\obj\usbd_ioreq.o" lastModified="15c9706a5ac"/>
+         <source file="..\obj\tm_stm32f4_timer_properties.o" lastModified="15c9706a686"/>
+         <source file="..\obj\stm32f4xx_tim.o" lastModified="15c9706a8a8"/>
       </target>
    </processor>
 </history>
