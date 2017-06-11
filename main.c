@@ -14,20 +14,25 @@
 #include "usbd_cdc_vcp.h"
 #include "usb_dcd_int.h"
 #include "defines.h"
-#include "stm32f4xx.h"
 #include "tm_stm32f4_delay.h"
 #include "tm_stm32f4_hd44780.h"
+#include "stm32f4xx_adc.h"
+
+
+
 volatile uint32_t ticker, downTicker;
-char user[128];
-char user_pom[128];
 int switcher=0;
-char data[1024];
-char view[128];
-char date[128];
 int flag  = 0;
 int user_flag =0;
+char msg[5][256];
 int pom =0;
-char msg[25][128];
+int pom2 = 0;
+char user[32];
+char user_pom[32];
+char data[2048];
+char view[256];
+char date[32];
+int index=0;
 /*
  * The USB data must be 4 byte aligned if DMA is enabled. This macro handles
  * the alignment, if necessary (it's actually magic, but don't tell anyone).
@@ -62,6 +67,8 @@ void OTG_FS_WKUP_IRQHandler(void);
 }
 #endif
 
+
+
  void TIM2_IRQHandler(void)
  {
           	if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
@@ -70,10 +77,9 @@ void OTG_FS_WKUP_IRQHandler(void);
           		{
           			GPIO_SetBits(GPIOD, GPIO_Pin_13);
   	          		switcher++;
-	          		if(switcher == 26)
+	          		if(switcher == 6)
 	          			switcher = 0;
 	          		flag=1;
-
           		}
           		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
           		TIM_Cmd(TIM2, DISABLE);
@@ -91,7 +97,7 @@ void OTG_FS_WKUP_IRQHandler(void);
           			GPIO_SetBits(GPIOD, GPIO_Pin_15);
           			switcher--;
        				if(switcher < 0)
-          		       switcher=25;
+          		       switcher=5;
           		    flag=1;
 				}
           		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
@@ -105,7 +111,6 @@ void OTG_FS_WKUP_IRQHandler(void);
  {
           	if(EXTI_GetITStatus(EXTI_Line1) != RESET)
           	{
-
           		TIM_Cmd(TIM4, ENABLE);
          	   	EXTI_ClearITPendingBit(EXTI_Line1);
     	   	}
@@ -115,155 +120,181 @@ void EXTI0_IRQHandler(void)
   {
            	if(EXTI_GetITStatus(EXTI_Line0) != RESET)
            	{
-
            		TIM_Cmd(TIM2, ENABLE);
            		EXTI_ClearITPendingBit(EXTI_Line0);
      	   	}
   }
 
 
-void update() //je¿eli pojawi sie nowe powiadomienie, przesuwa ca³¹ tablice o 1 w dó³
+void update()
 {
-	for (int i = 24; i >= 0; i--)
+	for (int i = 4; i >= 0; i--)
 	{
-		for (int j = 0; j < 128; j++)
+		for (int j = 0; j < 256; j++)
 		{
 			msg[i + 1][j] = msg[i][j];
 			msg[i][j] = ' ';
 		}
 	}
-	pom = 0;
 }
 
 int main(void)
 {
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
-	GPIO_InitTypeDef  GPIO_InitStructure;
-		//DIODY
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
+		GPIO_InitTypeDef  GPIO_InitStructure;
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+		GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_1;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = GPIO_PIN_1;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+		GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_0;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = GPIO_PIN_0;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+		GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_PIN_0;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = GPIO_PIN_0;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+		GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_TimeBaseStructure.TIM_Period = 8399;
-	TIM_TimeBaseStructure.TIM_Prescaler = 999;
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+		GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+		ADC_CommonInitTypeDef ADC_CommonInitStructure;
+		ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
+		ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;
+		ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+		ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
+		ADC_CommonInit(&ADC_CommonInitStructure);
+
+		ADC_InitTypeDef ADC_InitStructure;
+		ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
+		ADC_InitStructure.ADC_ScanConvMode = DISABLE;
+		ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+		ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
+		ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+		ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+		ADC_InitStructure.ADC_NbrOfConversion = 1;
 
 
-	TIM_TimeBaseStructure.TIM_Period = 8399;
-	TIM_TimeBaseStructure.TIM_Prescaler = 999;
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+		ADC_Init(ADC1, &ADC_InitStructure);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_84Cycles);
+		ADC_Cmd(ADC1, ENABLE);
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+		TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+		TIM_TimeBaseStructure.TIM_Period = 8399;
+		TIM_TimeBaseStructure.TIM_Prescaler = 999;
+		TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+		TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
+		TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 
-	NVIC_InitTypeDef NVIC_InitStructure;
-	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;// numer przerwania
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;// priorytet g³ówny
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;// subpriorytet
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;// uruchom dany kana³
-	NVIC_Init(&NVIC_InitStructure);// zapisz wype³nion¹ strukturê do rejestrów
 
-	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;// numer przerwania
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;// priorytet g³ówny
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;// subpriorytet
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;// uruchom dany kana³
-	NVIC_Init(&NVIC_InitStructure);// zapisz wype³nion¹ strukturê do rejestrów
+		TIM_TimeBaseStructure.TIM_Period = 8399;
+		TIM_TimeBaseStructure.TIM_Prescaler = 999;
+		TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+		TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
+		TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;	// numer przerwania
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;// priorytet g³ówny
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;// subpriorytet
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;// uruchom dany kana³
-	NVIC_Init(&NVIC_InitStructure);// zapisz wype³nion¹ strukturê do rejestrów
+		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+		NVIC_InitTypeDef NVIC_InitStructure;
+		NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
 
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;	// numer przerwania
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;// priorytet g³ówny
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;// subpriorytet
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;// uruchom dany kana³
-	NVIC_Init(&NVIC_InitStructure);// zapisz wype³nion¹ strukturê do rejestrów
+		NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
 
-	EXTI_InitTypeDef EXTI_InitStructure;
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
 
-	EXTI_InitStructure.EXTI_Line = EXTI_Line1;// wybór numeru aktualnie konfigurowanej linii przerwañ
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	// wybór trybu - przerwanie b¹dŸ zdarzenie
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;// wybór zbocza, na które zareaguje przerwanie
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;// uruchom dan¹ liniê przerwañ
-	EXTI_Init(&EXTI_InitStructure);// zapisz strukturê konfiguracyjn¹ przerwañ zewnêtrznych do rejestrów
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
 
-	EXTI_InitStructure.EXTI_Line = EXTI_Line0;// wybór numeru aktualnie konfigurowanej linii przerwañ
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	// wybór trybu - przerwanie b¹dŸ zdarzenie
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;// wybór zbocza, na które zareaguje przerwanie
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;// uruchom dan¹ liniê przerwañ
-	EXTI_Init(&EXTI_InitStructure);// zapisz strukturê konfiguracyjn¹ przerwañ zewnêtrznych do rejestrów
+		EXTI_InitTypeDef EXTI_InitStructure;
+		EXTI_InitStructure.EXTI_Line = EXTI_Line1;
+		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+		EXTI_Init(&EXTI_InitStructure);
 
-	TIM_ClearITPendingBit(TIM4, TIM_IT_Update);// wyczyszczenie przerwania od timera 4 (wyst¹pi³o przy konfiguracji timera)
-	TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);// zezwolenie na przerwania od przepe³nienia dla timera 4
+		EXTI_InitStructure.EXTI_Line = EXTI_Line0;
+		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+		EXTI_Init(&EXTI_InitStructure);
 
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);// wyczyszczenie przerwania od timera 2 (wyst¹pi³o przy konfiguracji timera)
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);// zezwolenie na przerwania od przepe³nienia dla timera 2
+		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+		TIM_ITConfig(TIM4, TIM_IT_Update, ENABLE);
 
-	//SYSCFG_EXTILineConfig(GPIOB, EXTI_PinSource0);
-	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource1);
-	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource0);
-	EXTI_ClearITPendingBit(EXTI_Line1);
-	EXTI_ClearITPendingBit(EXTI_Line0);
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+		TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+
+		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource1);
+		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource0);
+		EXTI_ClearITPendingBit(EXTI_Line1);
+		EXTI_ClearITPendingBit(EXTI_Line0);
 
 	/* Set up the system clocks */
 	SystemInit();
 
 	/* Initialize USB, IO, SysTick, and all those other things you do in the morning */
 	init();
-
+	/* Set up LCD */
 	TM_HD44780_Init(20, 4);
 
 
+	for(int i = 0; i < 32; i++)
+	{
+		date[i] = ' ';
+		user[i] = ' ';
+		user_pom[i] = ' ';
+	}
 
-	for(int j = 0; j < 25;j++){
-		for(int i = 0; i<128; i++){
-			user[i] = ' ';
+	for(int j = 0; j < 4;j++){
+		for(int i = 0; i<256; i++){
 			view[i] = ' ';
 			msg[j][i] = ' ';
-			date[i] = ' ';
+
 		}
 	}
-	int index=0;
 	for(;;)
 	{
-		Delayms(500);
+
+		Delayms(700);
 		TM_HD44780_ScrollLeft();
 
 		if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) != RESET && user_flag == 1)
@@ -272,13 +303,15 @@ int main(void)
 			TM_HD44780_PutsVCP(0,0,user);
 			TM_HD44780_PutsVCP(0,1,date);
 			user_flag=2;
+			Delayms(1000);
 		}
 		else if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) != RESET && user_flag != 1)
 		{
 			TM_HD44780_Clear();
-			for(int i = 0; i < 64; i++)
+			for(int i = 0; i < 80; i++)
 				view[i] = msg[0][i];
 			TM_HD44780_PutsVCP(0,0,view);
+			Delayms(1000);
 		}
 
 		if (VCP_get_string(data))
@@ -288,15 +321,15 @@ int main(void)
 			TM_HD44780_Clear();
 			TM_HD44780_Puts(0,0, "NOWE POWIADOMIENIE!");
 			TM_HD44780_Puts(0,1, "NACISNIJ 'USER', ABY WYSWIETLIC!");
-			for(int i = 0; i <1024; i++)
+			for(int i = 0; i <2048; i++)
 			{
 
 				if(data[i]=='=')
 				{
 					if(data[i-3] == 'u' && data[i-2]=='s' && data[i-1] == 'r')
 					{
-						int pom = 0;
-						int pom2 = i+1;
+						pom = 0;
+						pom2 = i+1;
 						while(data[pom2] != '$'){
 							user[pom] = data[pom2];
 							pom++;
@@ -304,43 +337,68 @@ int main(void)
 							}
 							user[pom+1] = '$';
 						user_flag = 1;
-						for(int i = 0; i < 128; i++)
+						for(int i = 0; i < 32; i++)
 							user_pom[i] = user[i];
 					}
 					else if(data[i-3] == 'm' && data[i-2]=='s' && data[i-1] == 'g')
 					{
-						if(index==25)
+						if(index==5)
 						{
 							update();
-							int pom = 0;
-							int pom2 = i+1;
+							pom = 0;
+							pom2 = i+1;
 							while(data[pom2] != '$'){
+								if (pom == 39){
+									msg[0][39] = ' ';
+									pom++;
+								}
 								msg[0][pom] = data[pom2];
 								pom++;
 								pom2++;
 								}
+							if(pom > 80)
+							{
+								msg[0][76] = '.';
+								msg[0][77] = '.';
+								msg[0][78] = '.';
+								msg[0][79] = '$';
+							}
+							else
 							msg[0][pom+1] = '$';
-							for(int i =0; i<128;i++)
-								user[i] = user_pom[i];
+
+							for(int i =0; i<32;i++)
+									user[i] = user_pom[i];
 						}
 						else
 						{
-							int pom = 0;
-							int pom2 = i+1;
+							pom = 0;
+							pom2 = i+1;
 							while(data[pom2] != '$')
 							{
+								if (pom == 39){
+									msg[index][39] = ' ';
+									pom++;
+								}
 								msg[index][pom] = data[pom2];
 								pom++;
 								pom2++;
 							}
-							msg[index][pom+1] = '$';
+							if(pom > 80)
+							{
+								msg[index][76] = '.';
+								msg[index][77] = '.';
+								msg[index][78] = '.';
+								msg[index][79] = '$';
+							}
+							else
+								msg[index][pom+1] = '$';
 							index++;
 						}
 					}
 					else if(data[i-3] == 'd' && data[i-2]=='a' && data[i-1] == 't')
 					{
-						int pom = 0;
-						int pom2 = i+1;
+						pom = 0;
+						pom2 = i+1;
 						while(data[pom2] != '$'){
 							date[pom] = data[pom2];
 							pom++;
@@ -350,25 +408,26 @@ int main(void)
 					}
 				}
 			}
-						for(int i = 0; i<1024; i++)
+						for(int i = 0; i<2048; i++)
 							data[i] = ' ';
 
 		}
 		else {
 			if(switcher != 0 && flag == 1){
 			TM_HD44780_Clear();
-			for(int i = 0; i < 64; i++)
+			for(int i = 0; i < 80; i++)
 			  	view[i] = msg[switcher-1][i];
 
 			TM_HD44780_PutsVCP(0,0,view);
-
 			flag=0;
+			Delayms(1000);
 			}
 			else if (switcher == 0 && flag == 1) {
 			TM_HD44780_Clear();
 			TM_HD44780_PutsVCP(0,0,user);
 			TM_HD44780_PutsVCP(0,1,date);
 			flag=0;
+			Delayms(1000);
 			}
 		}
 

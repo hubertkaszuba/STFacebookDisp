@@ -176,6 +176,8 @@ void TM_HD44780_PutsVCP(uint8_t x, uint8_t y, char* str) {
 				HD44780_Opts.currentY = 1;
 			else if(HD44780_Opts.currentY == 1)
 				HD44780_Opts.currentY = 3;
+			else if(HD44780_Opts.currentY == 3)
+				HD44780_Opts.currentY = 0;
 			TM_HD44780_CursorSet(HD44780_Opts.currentX, HD44780_Opts.currentY);
 		}
 		if (*str == '*' && *str+1 == 'n') {
