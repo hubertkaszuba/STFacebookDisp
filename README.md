@@ -67,7 +67,7 @@ ADC1 -> V0 (HD44780)
 
 ## How to compile
 <b>Facebook Displayer:</b> There is no need to change anything in source code.    
-<b>STM32F407VG Project:</b>   
+<b>STM32F407VG Project:</b>
 * Clone project from repository.    
 * Launch CooCox Project file, or copy all libraries and files into existing project and link all this files in CooCox.
 * Build project and dowlnoad code to flash.
