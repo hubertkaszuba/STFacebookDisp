@@ -37,7 +37,7 @@ Unfortunately, this is necessary because  Facebook prevents apps from downloadin
 * <b>Auto send</b> – Enabled means, refreshing the notification list every 5 seconds and automatically sending a new notification to the connected device.
 
 <b> Connections tab: </b>
-* <b>HD44780    </b>    
+* <b>HD44780</b>    
 VSS -> GND    
 VDD -> +5V    
 V0 -> ADC1 (Potentiometer)    
@@ -66,7 +66,11 @@ GND -> GND
 ADC1 -> V0 (HD44780)    
 
 ## How to compile
-<b>Facebook Displayer:</b> There is no need to change anything in source code.
+<b>Facebook Displayer:</b> There is no need to change anything in source code.    
+<b>STM32F407VG Project:</b>   
+* Clone project from repository.    
+* Launch CooCox Project file, or copy all libraries and files into existing project and link all this files in CooCox.
+* Build project and dowlnoad code to flash.
 
 ## Future improvements
 <b>Plans for future:</b>
