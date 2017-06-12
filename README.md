@@ -36,6 +36,35 @@ Unfortunately, this is necessary because  Facebook prevents apps from downloadin
 * <b>Read</b> – Displays a response from the device, 
 * <b>Auto send</b> – Enabled means, refreshing the notification list every 5 seconds and automatically sending a new notification to the connected device.
 
+<b> Connections tab: </b>
+* <b>HD44780</b>
+VSS -> GND
+VDD -> +5V
+V0 -> ADC1 (Potentiometer)
+RS -> PB2
+RW -> GND
+E -> PB7
+D0 -> NULL
+D1 -> NULL
+D2 -> NULL
+D3 -> NULL
+D4 -> PC12
+D5 -> PC13
+D6 -> PB12
+D7 -> PB13
+A -> +3V3
+K -> GND
+
+* <b>Buttons</b>
+G -> VDD
+K0 -> PC1
+K1 -> PD0
+
+* <b>Potentiometer</b>
+VCC -> +3V3
+GND -> GND
+ADC1 -> V0 (HD44780)
+
 ## How to compile
 <b>Facebook Displayer:</b> There is no need to change anything in source code.
 
