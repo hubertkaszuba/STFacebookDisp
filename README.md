@@ -9,7 +9,7 @@ It also allows you to view the last few notifications.
 
 ## Tools
 * <b>Facebook Displayer:</b> Visual Studio 2015, Language: C#
-
+* <b>STM32F407VG Project:</b> CooCox, Language: C
 ## How to run
 * <b>Facebook Displayer:</b> The application can be installed and launched directly from the folder: „Facebook Displayer Application” → Facebook Displayer.application, without pre-compiling the program in Visual Studio.
   
@@ -82,7 +82,14 @@ ADC1 -> V0 (HD44780)
 
 ## Attributions
 <b>Used API:</b>  Facebook SDK 7.0.6 – It can be installed to a project directly in Visual Studio
-
+<b>Used STM Libraries:</b>
+* TM_STM32F4_HD44780 Library    
+* TM_STM32F4_Delay Library    
+* TM_STM32F4_GPIO Library    
+* TM_STM32F4_Timer_Properties Library     
+From: https://stm32f4-discovery.net/2014/06/library-16-interfacing-hd44780-lcd-controller-with-stm32f4/    
+* VCP Libraries    
+From: https://github.com/xenovacivus/STM32DiscoveryVCP    
 ## License
 MIT License 
 Copyright (c) 2017 Konrad Michalak, Hubert Kaszuba
