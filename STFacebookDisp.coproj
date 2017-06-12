@@ -93,8 +93,8 @@
     <File name="usb_lib/otg/usb_dcd_int.c" path="usb_lib/otg/usb_dcd_int.c" type="1"/>
     <File name="usb_conf/usb_bsp.c" path="usb_conf/usb_bsp.c" type="1"/>
     <File name="cmsis_lib/include/defines.h" path="cmsis_lib/include/defines.h" type="1"/>
-    <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
     <File name="cmsis_boot/startup" path="" type="2"/>
+    <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
     <File name="cmsis_boot/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_spi.c" path="cmsis_lib/source/stm32f4xx_spi.c" type="1"/>
     <File name="usb_conf/usbd_conf.h" path="usb_conf/usbd_conf.h" type="1"/>
@@ -103,16 +103,16 @@
     <File name="cmsis/core_cm4.h" path="cmsis/core_cm4.h" type="1"/>
     <File name="cmsis_lib/source/tm_stm32f4_timer_properties.c" path="cmsis_lib/source/tm_stm32f4_timer_properties.c" type="1"/>
     <File name="cmsis_lib/source/misc.c" path="cmsis_lib/source/misc.c" type="1"/>
-    <File name="cmsis_lib/include/stm32f4xx_tim.h" path="cmsis_lib/include/stm32f4xx_tim.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_adc.c" path="cmsis_lib/source/stm32f4xx_adc.c" type="1"/>
-    <File name="usb_lib/otg" path="" type="2"/>
     <File name="usb_lib/core/usbd_def.h" path="usb_lib/core/usbd_def.h" type="1"/>
+    <File name="usb_lib/otg" path="" type="2"/>
+    <File name="cmsis_lib/include/stm32f4xx_tim.h" path="cmsis_lib/include/stm32f4xx_tim.h" type="1"/>
     <File name="syscalls/syscalls.c" path="syscalls/syscalls.c" type="1"/>
     <File name="usb_lib" path="" type="2"/>
     <File name="cmsis_lib/source" path="" type="2"/>
-    <File name="cmsis_lib/include/tm_stm32f4_timer_properties.h" path="cmsis_lib/include/tm_stm32f4_timer_properties.h" type="1"/>
     <File name="cmsis_lib/include/tm_stm32f4_hd44780.h" path="cmsis_lib/include/tm_stm32f4_hd44780.h" type="1"/>
     <File name="usb_conf/usbd_usr.c" path="usb_conf/usbd_usr.c" type="1"/>
+    <File name="cmsis_lib/include/tm_stm32f4_timer_properties.h" path="cmsis_lib/include/tm_stm32f4_timer_properties.h" type="1"/>
     <File name="cmsis_boot/stm32f4xx_conf.h" path="cmsis_boot/stm32f4xx_conf.h" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.h" path="cmsis_boot/system_stm32f4xx.h" type="1"/>
     <File name="cmsis_lib/include/tm_stm32f4_gpio.h" path="cmsis_lib/include/tm_stm32f4_gpio.h" type="1"/>

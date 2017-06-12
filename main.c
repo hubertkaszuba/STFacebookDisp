@@ -300,7 +300,8 @@ int main(void)
 		if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) != RESET && user_flag == 1)
 		{
 			TM_HD44780_Clear();
-			TM_HD44780_PutsVCP(0,0,user);
+			TM_HD44780_PutsVCP(0,0,"Zalogowano jako: $");
+			TM_HD44780_PutsVCP(17,0,user);
 			TM_HD44780_PutsVCP(0,1,date);
 			user_flag=2;
 			Delayms(1000);
@@ -320,7 +321,7 @@ int main(void)
 			VCP_send_str(data);
 			TM_HD44780_Clear();
 			TM_HD44780_Puts(0,0, "NOWE POWIADOMIENIE!");
-			TM_HD44780_Puts(0,1, "NACISNIJ 'USER', ABY WYSWIETLIC!");
+			TM_HD44780_Puts(0,1, "Nacisnij 'USER', aby wyswietlic!");
 			for(int i = 0; i <2048; i++)
 			{
 
@@ -424,7 +425,8 @@ int main(void)
 			}
 			else if (switcher == 0 && flag == 1) {
 			TM_HD44780_Clear();
-			TM_HD44780_PutsVCP(0,0,user);
+			TM_HD44780_PutsVCP(0,0,"Zalogowano jako: $");
+			TM_HD44780_PutsVCP(17,0,user);
 			TM_HD44780_PutsVCP(0,1,date);
 			flag=0;
 			Delayms(1000);
