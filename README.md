@@ -65,6 +65,8 @@ VCC -> +3V3
 GND -> GND    
 ADC1 -> V0 (HD44780)    
 
+Hook a USB Micro cable to the STM32F407VG Discovery board. The device should be show up as a Virtual Com Port. Now you can use Facebook API to login into Facebook, then you should get first notification. Use 'User' button to show it, and use K0 and K1 buttons to switch between lastest notifications.
+
 ## How to compile
 <b>Facebook Displayer:</b> There is no need to change anything in source code.    
 <b>STM32F407VG Project:</b>
@@ -81,7 +83,7 @@ ADC1 -> V0 (HD44780)
 * If more than one notification occurs within 5 seconds, the device will receive only the most recent one
 
 ## Attributions
-<b>Used API:</b>  Facebook SDK 7.0.6 – It can be installed to a project directly in Visual Studio
+<b>Used API:</b>  Facebook SDK 7.0.6 – It can be installed to a project directly in Visual Studio    
 <b>Used STM Libraries:</b>
 * TM_STM32F4_HD44780 Library    
 * TM_STM32F4_Delay Library    
