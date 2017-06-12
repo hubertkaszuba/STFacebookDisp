@@ -39,12 +39,19 @@ Unfortunately, this is necessary because  Facebook prevents apps from downloadin
 <b> Connections tab: </b>
 * <b>HD44780</b>
 VSS -> GND
+
 VDD -> +5V
+
 V0 -> ADC1 (Potentiometer)
+
 RS -> PB2
+
 RW -> GND
+
 E -> PB7
+
 D0 -> NULL
+
 D1 -> NULL
 D2 -> NULL
 D3 -> NULL
