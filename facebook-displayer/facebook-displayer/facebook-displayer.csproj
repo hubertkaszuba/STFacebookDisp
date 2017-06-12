@@ -27,7 +27,7 @@
     <ProductName>Facebook Displayer</ProductName>
     <PublisherName>Studenciaki</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>14</ApplicationRevision>
+    <ApplicationRevision>15</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

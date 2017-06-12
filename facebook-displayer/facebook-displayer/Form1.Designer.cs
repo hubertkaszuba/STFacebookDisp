@@ -39,6 +39,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.pg_logowanie = new System.Windows.Forms.TabPage();
+            this.lbl_token = new System.Windows.Forms.Label();
             this.txtBoxToken = new System.Windows.Forms.TextBox();
             this.btn_autoSignIn = new System.Windows.Forms.Button();
             this.pg_lista = new System.Windows.Forms.TabPage();
@@ -64,7 +65,6 @@
             this.box_baud_rate = new System.Windows.Forms.ComboBox();
             this.box_port_names = new System.Windows.Forms.ComboBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.lbl_token = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.pg_logowanie.SuspendLayout();
             this.pg_lista.SuspendLayout();
@@ -95,7 +95,7 @@
             this.btnSignIn.Name = "btnSignIn";
             this.btnSignIn.Size = new System.Drawing.Size(392, 23);
             this.btnSignIn.TabIndex = 1;
-            this.btnSignIn.Text = "Logowanie ręczne";
+            this.btnSignIn.Text = "Manual login";
             this.btnSignIn.UseVisualStyleBackColor = false;
             this.btnSignIn.Click += new System.EventHandler(this.btnSignIn_Click);
             // 
@@ -113,9 +113,9 @@
             this.btn_Get_List.Enabled = false;
             this.btn_Get_List.Location = new System.Drawing.Point(8, 280);
             this.btn_Get_List.Name = "btn_Get_List";
-            this.btn_Get_List.Size = new System.Drawing.Size(75, 23);
+            this.btn_Get_List.Size = new System.Drawing.Size(95, 23);
             this.btn_Get_List.TabIndex = 3;
-            this.btn_Get_List.Text = "Pobierz liste";
+            this.btn_Get_List.Text = "Download list";
             this.btn_Get_List.UseVisualStyleBackColor = true;
             this.btn_Get_List.Click += new System.EventHandler(this.btn_Get_List_Click);
             // 
@@ -131,11 +131,11 @@
             // btnClear
             // 
             this.btnClear.Enabled = false;
-            this.btnClear.Location = new System.Drawing.Point(89, 280);
+            this.btnClear.Location = new System.Drawing.Point(109, 280);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 5;
-            this.btnClear.Text = "Wyczyść";
+            this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btn_Clear_Click);
             // 
@@ -168,9 +168,18 @@
             this.pg_logowanie.Padding = new System.Windows.Forms.Padding(3);
             this.pg_logowanie.Size = new System.Drawing.Size(529, 305);
             this.pg_logowanie.TabIndex = 0;
-            this.pg_logowanie.Text = "Logowanie";
+            this.pg_logowanie.Text = "Login";
             this.pg_logowanie.UseVisualStyleBackColor = true;
             this.pg_logowanie.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // lbl_token
+            // 
+            this.lbl_token.AutoSize = true;
+            this.lbl_token.Location = new System.Drawing.Point(8, 235);
+            this.lbl_token.Name = "lbl_token";
+            this.lbl_token.Size = new System.Drawing.Size(79, 13);
+            this.lbl_token.TabIndex = 4;
+            this.lbl_token.Text = "Access Token:";
             // 
             // txtBoxToken
             // 
@@ -187,7 +196,7 @@
             this.btn_autoSignIn.Name = "btn_autoSignIn";
             this.btn_autoSignIn.Size = new System.Drawing.Size(117, 23);
             this.btn_autoSignIn.TabIndex = 2;
-            this.btn_autoSignIn.Text = "Automatyczne";
+            this.btn_autoSignIn.Text = "Auto login";
             this.btn_autoSignIn.UseVisualStyleBackColor = false;
             this.btn_autoSignIn.Click += new System.EventHandler(this.btn_autoSignIn_Click);
             // 
@@ -202,7 +211,7 @@
             this.pg_lista.Padding = new System.Windows.Forms.Padding(3);
             this.pg_lista.Size = new System.Drawing.Size(529, 305);
             this.pg_lista.TabIndex = 1;
-            this.pg_lista.Text = "Lista powiadomień";
+            this.pg_lista.Text = "Notification list";
             this.pg_lista.UseVisualStyleBackColor = true;
             // 
             // groupBox4
@@ -213,7 +222,7 @@
             this.groupBox4.Size = new System.Drawing.Size(512, 140);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Lista powiadomień";
+            this.groupBox4.Text = "Notification list";
             // 
             // groupBox3
             // 
@@ -223,7 +232,7 @@
             this.groupBox3.Size = new System.Drawing.Size(512, 130);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Zawartosc do wyslania";
+            this.groupBox3.Text = "Content to send";
             // 
             // pg_serialport
             // 
@@ -252,7 +261,7 @@
             this.btn_scan.Name = "btn_scan";
             this.btn_scan.Size = new System.Drawing.Size(65, 21);
             this.btn_scan.TabIndex = 21;
-            this.btn_scan.Text = "Skanuj";
+            this.btn_scan.Text = "Scan";
             this.btn_scan.UseVisualStyleBackColor = true;
             this.btn_scan.Click += new System.EventHandler(this.btn_scan_Click);
             // 
@@ -290,7 +299,7 @@
             this.btn_close_port.Name = "btn_close_port";
             this.btn_close_port.Size = new System.Drawing.Size(82, 21);
             this.btn_close_port.TabIndex = 17;
-            this.btn_close_port.Text = "Zamknij port";
+            this.btn_close_port.Text = "Close port";
             this.btn_close_port.UseVisualStyleBackColor = true;
             this.btn_close_port.Click += new System.EventHandler(this.btn_close_port_Click);
             // 
@@ -300,7 +309,7 @@
             this.btn_open_port.Name = "btn_open_port";
             this.btn_open_port.Size = new System.Drawing.Size(82, 21);
             this.btn_open_port.TabIndex = 16;
-            this.btn_open_port.Text = "Otworz port";
+            this.btn_open_port.Text = "Open port";
             this.btn_open_port.UseVisualStyleBackColor = true;
             this.btn_open_port.Click += new System.EventHandler(this.btn_open_port_Click);
             // 
@@ -315,16 +324,16 @@
             this.groupBox2.Size = new System.Drawing.Size(263, 204);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Otrzymane dane";
+            this.groupBox2.Text = "Received data";
             // 
             // lbl4
             // 
             this.lbl4.AutoSize = true;
-            this.lbl4.Location = new System.Drawing.Point(130, 181);
+            this.lbl4.Location = new System.Drawing.Point(150, 181);
             this.lbl4.Name = "lbl4";
-            this.lbl4.Size = new System.Drawing.Size(82, 13);
+            this.lbl4.Size = new System.Drawing.Size(58, 13);
             this.lbl4.TabIndex = 13;
-            this.lbl4.Text = "Auto wysyłanie:";
+            this.lbl4.Text = "Auto send:";
             // 
             // btn_auto_wysylanie
             // 
@@ -343,7 +352,7 @@
             this.btn_read.Name = "btn_read";
             this.btn_read.Size = new System.Drawing.Size(75, 23);
             this.btn_read.TabIndex = 2;
-            this.btn_read.Text = "Odczytaj";
+            this.btn_read.Text = "Read";
             this.btn_read.UseVisualStyleBackColor = true;
             this.btn_read.Click += new System.EventHandler(this.btn_read_Click);
             // 
@@ -366,7 +375,7 @@
             this.groupBox1.Size = new System.Drawing.Size(247, 204);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Wysyłane dane";
+            this.groupBox1.Text = "Data to send";
             // 
             // btn_wyslij_liste
             // 
@@ -375,7 +384,7 @@
             this.btn_wyslij_liste.Name = "btn_wyslij_liste";
             this.btn_wyslij_liste.Size = new System.Drawing.Size(75, 23);
             this.btn_wyslij_liste.TabIndex = 2;
-            this.btn_wyslij_liste.Text = "Wyslij liste";
+            this.btn_wyslij_liste.Text = "Send list";
             this.btn_wyslij_liste.UseVisualStyleBackColor = true;
             this.btn_wyslij_liste.Click += new System.EventHandler(this.btn_send_list_Click);
             // 
@@ -386,7 +395,7 @@
             this.btn_send.Name = "btn_send";
             this.btn_send.Size = new System.Drawing.Size(75, 23);
             this.btn_send.TabIndex = 1;
-            this.btn_send.Text = "Wyslij";
+            this.btn_send.Text = "Send";
             this.btn_send.UseVisualStyleBackColor = true;
             this.btn_send.Click += new System.EventHandler(this.btn_send_Click);
             // 
@@ -428,15 +437,6 @@
             this.box_port_names.Name = "box_port_names";
             this.box_port_names.Size = new System.Drawing.Size(121, 21);
             this.box_port_names.TabIndex = 10;
-            // 
-            // lbl_token
-            // 
-            this.lbl_token.AutoSize = true;
-            this.lbl_token.Location = new System.Drawing.Point(8, 235);
-            this.lbl_token.Name = "lbl_token";
-            this.lbl_token.Size = new System.Drawing.Size(79, 13);
-            this.lbl_token.TabIndex = 4;
-            this.lbl_token.Text = "Access Token:";
             // 
             // Facebook_displayer
             // 

@@ -87,7 +87,7 @@ namespace facebook_displayer
 
                 FacebookClient fb = new FacebookClient(access_token);
                 dynamic data = fb.Get("me?fields=name,birthday,education,gender,email");
-                if (auto_login == false) MessageBox.Show("Zalogowano jako " + data.name + ", ur. " + data.birthday);
+                if (auto_login == false) MessageBox.Show("Logged in as " + data.name + ", ur. " + data.birthday);
                 user_info = "usr=" + data.name + "$" + "dat=" + data.birthday + "$";
                 btn_Get_List.Enabled = true;
                 btnSignIn.Enabled = false;
@@ -116,7 +116,7 @@ namespace facebook_displayer
                 /*--------POBIERANIE POWIADOMIEŃ--------*/ //
                 timer1.Start();
                 string token_auto = txtBoxToken.Text;
-                if (token_auto == "") { MessageBox.Show("Nieprawidłowy Access Token!"); this.Close(); }
+                if (token_auto == "") { MessageBox.Show("Incorrect Access Token!"); this.Close(); }
                 FacebookClient fb = new FacebookClient(token_auto);
                 dynamic user_notifications = fb.Get("/me/notifications");
                 int likes_count = (int)user_notifications.data.Count;
@@ -222,7 +222,7 @@ namespace facebook_displayer
                 }
                 else
                 {
-                    box_sended_data.Text = "Port jest zamkniety!";
+                    box_sended_data.Text = "Port is closed!";
                 }
             }
             catch (TimeoutException)
@@ -241,7 +241,7 @@ namespace facebook_displayer
                 }
                 else
                 {
-                    box_received_data.Text = "Port jest zamkniety!";
+                    box_received_data.Text = "Port is closed!";
                 }
             }
             catch (TimeoutException)
@@ -261,7 +261,7 @@ namespace facebook_displayer
                 }
                 if (box_port_names.Text == "" || box_baud_rate.Text == "")
                 {
-                    box_received_data.Text = "Wybierz port";
+                    box_received_data.Text = "Select port";
                 }
                 else
                 {
@@ -337,7 +337,7 @@ namespace facebook_displayer
                 }
                 else
                 {
-                    box_sended_data.Text = "Port jest zamkniety!";
+                    box_sended_data.Text = "Port is closed!";
                 }
             }
             catch (TimeoutException)
