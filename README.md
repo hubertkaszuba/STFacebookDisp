@@ -5,7 +5,7 @@ STFacebookDisp is a project that is supposed to inform the user about incoming n
 It also allows you to view the last few notifications.
 
 ## Description
-
+Our project is based on Facebook Application and STM32F407VG Discovery microcontroller. To show facebook notifications, We use LCD HD44780 display. To switch between notifications, We use Keyboard connected to STM board. Also there is a potentiometer to change contrast on LCD HD44780 display. We connect STM32f407VG to Facebook Api by the Virtual Com Port. When the connection is active, the application sends a packet of information that is interpreted by the microcontroller program and stored in memory. At the same time, a new notification message appears on the screen
 
 ## Tools
 * <b>Facebook Displayer:</b> Visual Studio 2015, Language: C#
@@ -65,7 +65,7 @@ VCC -> +3V3
 GND -> GND    
 ADC1 -> V0 (HD44780)    
 
-Hook a USB Micro cable to the STM32F407VG Discovery board. The device should be show up as a Virtual Com Port. Now you can use Facebook API to login into Facebook, then you should get first notification. Use 'User' button to show it, and use K0 and K1 buttons to switch between lastest notifications.
+Hook a USB Micro cable to the STM32F407VG Discovery board. The device should be show up as a Virtual Com Port. Now you can use Facebook API to login into Facebook, then you should get first notification. Use 'User' button to show it, and use K0 and K1 buttons to switch between lastest notifications. To change LCD contrast use potentiometer.
 
 ## How to compile
 <b>Facebook Displayer:</b> There is no need to change anything in source code.    
